@@ -10,7 +10,7 @@ const Header = require('./models/header');
 const QParam = require('./models/qparam');
 const RequestBody = require('./models/requestBody');
 const ResponseHeader = require('./models/responseHeader');
-const Module = require('./models/Module');
+const Module = require('./models/module');
 const moduleMockMap = new Map();
 
 
