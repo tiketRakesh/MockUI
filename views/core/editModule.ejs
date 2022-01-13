@@ -1,0 +1,19 @@
+<% layout('layouts/boilerplate')%>
+<div class="row">
+    <h1 class="text-center">Edit Module Name</h1>
+    <div class="col-6 offset-3">
+        <form action="/module/<%=module._id%>?_method=PUT" method="POST" novalidate class="validated-form">
+            <div class="mb-3">
+                <label class="form-label" for="moduleName">Module Name</label>
+                <input class="form-control" type="text" id="moduleName" name="module[name]" value="<%=module.name %>" required>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-info">Update Module Name</button>
+            </div>
+        </form>
+        <a href="/">Back to all Configured Modules </a>
+    </div>
+</div>

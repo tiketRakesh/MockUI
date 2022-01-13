@@ -1,0 +1,176 @@
+<% layout('layouts/boilerplate')%>
+
+<div class="row">
+    <div class="col-6 offset-3">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><b>description</b> : <%= mock.description%></h5>
+                <h5 class="card-title"><b>endPoint</b> : <%= mock.endPoint%></h5>
+                <h5 class="card-title"><b>statusCode</b> : <%= mock.statusCodes%></h5>
+                <h5 class="card-title"><b>contentType</b> : <%= mock.contentType%></h5>
+                <h5 class="card-title"><b>httpMethod</b> : <%= mock.httpMethod%></h5>
+                <h5 class="card-title"><b>delay</b> : <%= mock.delay%></h5>
+                <p class="card-text"><b>body</b> : <%= mock.body%></p>
+            </div>
+            <div class="card-body">
+                <a class="card-link btn btn-info" href="/module/<%=moduleId%>/mock/<%=mock._id%>/edit">Edit</a>
+                <form class="d-inline" action="/module/<%=moduleId%>/mock/<%=mock._id%>?_method=DELETE" method="POST">
+                    <button class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 offset-3">
+        <h5 class="card-title"><b>Add Matcher : Headers</b></h5>
+        <form novalidate class="validated-form" action="/module/<%=moduleId%>/mock/<%=mock._id%>/header" method="POST" >
+            <div class="card-body">
+            <div class="row">
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Key" name="header[key]" required></input>
+                 </div>
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Value" name="header[value]" required></input>
+                </div>
+                <div class="col-sm-3" >
+                    <button class="btn btn-success ">Add</button>
+                </div>
+            </div>
+            </div>
+        </form>
+        <% for(let header of mock.headers) { %>
+        <div class="card mb-3 ">
+            <div class="card-body">
+                <div class="row"> 
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Key: <%= header.key %></p>
+                    </div>
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Value: <%= header.value %></p>
+                    </div>
+                     <div class="col-sm-3" > 
+                        <form action="/module/<%=moduleId%>/mock/<%=mock._id%>/header/<%=header._id%>?_method=DELETE" method="POST">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>    
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <div class="col-6 offset-3">
+        <h5 class="card-title"><b>Add Matcher : QueryParam</b></h5>
+        <form novalidate class="validated-form" action="/module/<%=moduleId%>/mock/<%=mock._id%>/qparam" method="POST" >
+            <div class="card-body">
+            <div class="row">
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Key" name="qparam[key]" required></input>
+                 </div>
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Value" name="qparam[value]" required></input>
+                </div>
+                <div class="col-sm-3" >
+                    <button class="btn btn-success ">Add</button>
+                </div>
+            </div>
+            </div>
+        </form>
+        <% for(let qparam of mock.qparams) { %>
+        <div class="card mb-3 ">
+            <div class="card-body">
+                <div class="row"> 
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Key: <%= qparam.key %></p>
+                    </div>
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Value: <%= qparam.value %></p>
+                    </div>
+                     <div class="col-sm-3" > 
+                        <form action="/module/<%=moduleId%>/mock/<%=mock._id%>/qparam/<%=qparam._id%>?_method=DELETE" method="POST">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>    
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <div class="col-6 offset-3">
+        <h5 class="card-title"><b>Add Matcher : RequestBody</b></h5>
+        <form novalidate class="validated-form" action="/module/<%=moduleId%>/mock/<%=mock._id%>/requestBody" method="POST" >
+            <div class="card-body">
+            <div class="row">
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Json/Xml path" name="requestBody[path]" required></input>
+                 </div>
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Value" name="requestBody[value]" required></input>
+                </div>
+                <div class="col-sm-3" >
+                    <button class="btn btn-success ">Add</button>
+                </div>
+            </div>
+            </div>
+        </form>
+        <% for(let path of mock.requestBody) { %>
+        <div class="card mb-3 ">
+            <div class="card-body">
+                <div class="row"> 
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Path: <%= path.path %></p>
+                    </div>
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Value: <%= path.value %></p>
+                    </div>
+                     <div class="col-sm-3" > 
+                        <form action="/module/<%=moduleId%>/mock/<%=mock._id%>/requestBody/<%=path._id%>?_method=DELETE" method="POST">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>    
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <div class="col-6 offset-3">
+        <h5 class="card-title"><b>Add Response Headers</b></h5>
+        <form novalidate class="validated-form" action="/module/<%=moduleId%>/mock/<%=mock._id%>/responseHeader" method="POST" >
+            <div class="card-body">
+            <div class="row">
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Key" name="responseHeader[key]" required></input>
+                 </div>
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Value" name="responseHeader[value]" required></input>
+                </div>
+                <div class="col-sm-3" >
+                    <button class="btn btn-success ">Add</button>
+                </div>
+            </div>
+            </div>
+        </form>
+        <% for(let responseHeader of mock.responseHeaders) { %>
+        <div class="card mb-3 ">
+            <div class="card-body">
+                <div class="row"> 
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Key: <%= responseHeader.key %></p>
+                    </div>
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Value: <%= responseHeader.value %></p>
+                    </div>
+                     <div class="col-sm-3" > 
+                        <form action="/module/<%=moduleId%>/mock/<%=mock._id%>/responseHeader/<%=responseHeader._id%>?_method=DELETE" method="POST">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>    
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <div class="col-6 offset-3">
+        <div class="card-footer text-muted">
+            <a href="/module/<%=moduleId%>/mocks">All Configured Mock Endpoint</a>
+        </div>
+    </div>
+</div>

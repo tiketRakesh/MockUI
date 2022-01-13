@@ -1,0 +1,76 @@
+<% layout('layouts/boilerplate')%>
+<div class="row">
+    <h1 class="text-center">New Mock Endpoint</h1>
+    <div class="col-6 offset-3">
+        <form action="/module/<%=moduleId%>/mock" method="POST" novalidate class="validated-form">
+            <div class="mb-3">
+                <label class="form-label" for="description">Description :</label>
+                <input class="form-control" type="text" id="description" name="mock[description]" maxlength = "120" required>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="endPoint">EndPoint:</label>
+                <input class="form-control" type="text" id="endPoint" name="mock[endPoint]" required>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6" >
+                    <label class="center-block" for="statusCodes">Status Code:</label>
+                     <input id="statusCodes" class="form-control"  name="mock[statusCodes]" required></input>
+                     <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="col-sm-6" >
+                    <label class="center-block" for="contentType">Content Type:</label>
+                    <select class="form-select" aria-label="Default select example" name="mock[contentType]" required>
+                        <option selected></option>
+                        <option value="application/json">application/json</option>
+                        <option value="application/xml">application/xml</option>
+                      </select> 
+                      <div class="valid-feedback">
+                        Looks good!
+                    </div>               
+                </div>
+                <div class="col-sm-6" >
+                   <label class="center-block" for="httpMethod">Http Method:</label>
+                    <select class="form-select" aria-label="Default select example" name="mock[httpMethod]" required>
+                    <option selected></option>
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                  </select>
+                  <div class="valid-feedback">
+                    Looks good!
+                  </div>
+                </div>
+                <div class="col-sm-6" >
+                    <label class="center-block" for="delay">Delay:</label>
+                    <input id="delay" class="form-control" name="mock[delay]" required></input>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="mb-3">
+                <label class="form-label" for="body">Body:</label>
+                <textarea class="form-control" type="text" id="body" name="mock[body]" rows="6" required></textarea>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-success">Add Mock Endpoint</button>
+            </div>
+        </form>
+        <a href="/module/<%=moduleId%>/mocks/">All Configured Mock Endpoint</a>
+    </div>
+</div>

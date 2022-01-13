@@ -1,0 +1,29 @@
+<% layout('layouts/boilerplate')%>
+
+<h1><%=moduleName%> : All Configured Mock Endpoints</h1>
+<div>
+    <a href="/module/<%=moduleId%>/mock/new">Add a New Mock EndPoint</a>
+</div>
+<% for (let mock of mocks){%>
+<div class="card mb-3">
+    <div class="row">
+        <div class="col-sm-6" >
+            <div class="card-body">
+            <h5 class="card-title"><%= mock.endPoint %> </h5>
+            <p class="font-italic"><%= mock.description %> </p>
+            </div>
+        </div>
+        <div class="col-sm-6" >
+            <div class="card-body">
+            <div class="d-flex flex-row-reverse">
+            <a class="btn btn-primary" href="/module/<%=moduleId%>/mock/show/<%=mock._id%>">View </a> 
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% }%>
+<a href="/">Back to all Configured Modules </a>
+
+
+
