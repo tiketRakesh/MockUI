@@ -14,11 +14,17 @@ const Module = require('./models/module');
 const moduleMockMap = new Map();
 
 
-mongoose.connect('mongodb://root:example@localhost:27017', {
+mongoose.connect('mongodb://localhost:27017/mocks', {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
 });
+
+/* mongoose.connect('mongodb://root:example@localhost:27017', {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+}); */
 
 
 const db = mongoose.connection;
@@ -32,8 +38,9 @@ const app = express();
 app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
-
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb',extended: true}));
+//app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 //module related routes
