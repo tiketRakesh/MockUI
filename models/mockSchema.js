@@ -14,6 +14,10 @@ const mockSchema = new Schema({
     delay: String,
     httpMethod:String,
     body: String,
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     headers: [
         {
             type: Schema.Types.ObjectId,
