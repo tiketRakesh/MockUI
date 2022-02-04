@@ -142,8 +142,9 @@ app.delete('/module/:id',isLoggedIn,isAdmin, catchAsync(async (req, res) => {
 
 app.get('/module/:id/mocks', isLoggedIn ,catchAsync(async (req, res) => {
     moduleId = req.params.id;
+    module="";
     try{
-        const module = await Module.findById(moduleId)
+         module = await Module.findById(moduleId)
     }catch(e){
         req.flash('error', 'Cannot find that module , Incorrect moduleId!');
         return res.redirect('/');
