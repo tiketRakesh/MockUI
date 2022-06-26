@@ -4,12 +4,15 @@ const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const methodOverride = require('method-override');
 const mockDb = require('./models/mockSchema');
+const Callback = require('./models/callBack');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const Header = require('./models/header');
 const QParam = require('./models/qparam');
 const RequestBody = require('./models/requestBody');
 const ResponseHeader = require('./models/responseHeader');
+const DynamicResponse = require('./models/dynamicResponse');
+const DynamicRequestCallback = require('./models/dynamicRequestCallback');
 const Module = require('./models/module');
 const moduleMockMap = new Map();
 const flash = require('connect-flash');
@@ -21,19 +24,17 @@ const session = require('express-session');
 const { isLoggedIn,isAdmin,isAuthor} = require('./middleware');
 
 
-
-
-mongoose.connect('mongodb://localhost:27017/mocks', {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-});
-
-/*  mongoose.connect('mongodb://root:example@localhost:27017', {
+/* mongoose.connect('mongodb://root:example@localhost:27017', {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
 }); */
+
+ mongoose.connect('mongodb://root:example@localhost:27017', {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+});
 
 
 const db = mongoose.connection;
@@ -174,7 +175,7 @@ app.get('/module/:moduleId/mock/show/:id', catchAsync(async (req, res,) => {
     const moduleId= req.params.moduleId;
     mock='';
     try{
-        mock = await mockDb.findById(req.params.id).populate('headers').populate('qparams').populate('requestBody').populate('responseHeaders').populate('module')
+        mock = await mockDb.findById(req.params.id).populate('headers').populate('qparams').populate('requestBody').populate('responseHeaders').populate('module').populate('callBack').populate('dynamicResponse').populate('dynamicRequestCallback')
     }catch(e){
         req.flash('error', 'Cannot find that mock , Incorrect mockId!');
         return res.redirect('/');
@@ -212,6 +213,111 @@ app.delete('/module/:moduleId/mock/:id', isAuthor,catchAsync(async (req, res) =>
     res.redirect(`/module/${moduleId}/mocks`)
 }));
 
+//Model realted to callback routs 
+
+app.get('/module/:moduleId/mock/:id/callback', isAuthor,catchAsync(async (req, res) => {
+    const moduleId= req.params.moduleId;
+    mock='';
+    try{
+     mock = await mockDb.findById(req.params.id)
+
+    }catch(e){
+        req.flash('error', 'Cannot find that mock , Incorrect mockId!');
+        return res.redirect('/');
+    }
+    res.render('core/newCallback', { mock ,moduleId});
+}));
+
+app.get('/module/:moduleId/mock/:id/callback/:callbackId/edit', isAuthor,catchAsync(async (req, res) => {
+    const moduleId= req.params.moduleId;
+    mock='';
+    callbackData='';
+    try{
+     mock = await mockDb.findById(req.params.id)
+     callBack = await Callback.findById(req.params.callbackId)
+
+    }catch(e){
+        req.flash('error', 'Cannot find that mock , Incorrect mockId!');
+        return res.redirect('/');
+    }
+    res.render('core/editCallback', { mock ,moduleId,callBack});
+}));
+
+
+
+app.post('/module/:moduleId/mock/:id/callback',isAuthor, catchAsync(async (req, res) => {
+    const moduleId=req.params.moduleId;
+    const mock = await mockDb.findById(req.params.id);
+    const callback = new Callback(req.body.callback);
+    mock.callBack.push(callback);
+    await callback.save();
+    await mock.save();
+    req.flash('success', 'Successfully added the callback ');
+    res.redirect(`/module/${moduleId}/mock/show/${mock._id}`)
+}));
+
+app.put('/module/:moduleId/mock/:id/callback/:callbackId', catchAsync(async (req, res) => {
+    const {moduleId, id, callbackId } = req.params;
+    const mock = await mockDb.findById(id);
+    const callback = await Callback.findByIdAndUpdate(callbackId, { ...req.body.callBack});
+    req.flash('success', 'Successfully updated the  callback data !');
+    res.redirect(`/module/${moduleId}/mock/show/${mock._id}`)
+}));
+
+app.delete('/module/:moduleId/mock/:id/callback/:callbackId',isAuthor, catchAsync(async (req, res) => {
+    const {moduleId, id, callbackId } = req.params;
+    await mockDb.findByIdAndUpdate(id, { $pull: { callBack: callbackId } });
+    await Callback.findByIdAndDelete(callbackId);
+    req.flash('success', 'Successfully deleted the callback data !');
+    res.redirect(`/module/${moduleId}/mock/show/${id}`)
+    
+}))
+
+
+//Model  related to dynamic response   
+app.post('/module/:moduleId/mock/:id/dynamicResponse',isAuthor, catchAsync(async (req, res) => {
+    const moduleId=req.params.moduleId;
+    const mock = await mockDb.findById(req.params.id);
+    const dr = new DynamicResponse(req.body.dynamicResponse);
+    mock.dynamicResponse.push(dr);
+    await dr.save();
+    await mock.save();
+    req.flash('success', 'Successfully added the dynamic response  matcher!');
+    res.redirect(`/module/${moduleId}/mock/show/${mock._id}`)
+}));
+
+
+app.delete('/module/:moduleId/mock/:id/dynamicResponse/:dynamicResponseId',isAuthor, catchAsync(async (req, res) => {
+    const {moduleId, id, dynamicResponseId } = req.params;
+    await mockDb.findByIdAndUpdate(id, { $pull: { dynamicResponse: dynamicResponseId } });
+    await Header.findByIdAndDelete(dynamicResponseId);
+    req.flash('success', 'Successfully deleted the dynamic response  matcher!');
+    res.redirect(`/module/${moduleId}/mock/show/${id}`)
+    
+}))
+
+
+//Model  related to dynamic request callback   
+app.post('/module/:moduleId/mock/:id/dynamicRequestCallback',isAuthor, catchAsync(async (req, res) => {
+    const moduleId=req.params.moduleId;
+    const mock = await mockDb.findById(req.params.id);
+    const drc = new DynamicRequestCallback(req.body.dynamicRequestCallback);
+    mock.dynamicRequestCallback.push(drc);
+    await drc.save();
+    await mock.save();
+    req.flash('success', 'Successfully added the dynamic request callback matcher!');
+    res.redirect(`/module/${moduleId}/mock/show/${mock._id}`)
+}));
+
+
+app.delete('/module/:moduleId/mock/:id/dynamicRequestCallback/:dynamicRequestCallbackId',isAuthor, catchAsync(async (req, res) => {
+    const {moduleId, id, dynamicRequestCallbackId } = req.params;
+    await mockDb.findByIdAndUpdate(id, { $pull: { dynamicRequestCallback: dynamicRequestCallbackId } });
+    await Header.findByIdAndDelete(dynamicRequestCallbackId);
+    req.flash('success', 'Successfully deleted the dynamic request callback matcher!');
+    res.redirect(`/module/${moduleId}/mock/show/${id}`)
+    
+}))
 
 
 //Model Header related routing  
@@ -225,6 +331,7 @@ app.post('/module/:moduleId/mock/:id/header',isAuthor, catchAsync(async (req, re
     req.flash('success', 'Successfully added the header matcher!');
     res.redirect(`/module/${moduleId}/mock/show/${mock._id}`)
 }));
+
 
 app.delete('/module/:moduleId/mock/:id/header/:headerId',isAuthor, catchAsync(async (req, res) => {
     const {moduleId, id, headerId } = req.params;

@@ -1,0 +1,94 @@
+<% layout('layouts/boilerplate')%>
+<div class="row">
+    <h1 class="text-center">Edit Callback Data</h1>
+    <div class="col-6 offset-3">
+        <form action="/module/<%=moduleId%>/mock/<%=mock._id%>/callback/<%=callBack._id%>?_method=PUT" method="POST" novalidate class="validated-form">
+           
+            <div class="row">
+
+                <div class="col-sm-6" >
+                    <label class="center-block" for="protocol">Protocol :</label>
+                       <select class="form-select" aria-label="Default select example" name="callBack[protocol]" value="<%=callBack.protocol %>" required>
+                        <option selected><%=callBack.protocol %></option>
+                        <option value="https">https</option>
+                        <option value="http">http</option>
+                      </select>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                 </div>
+
+                <div class="col-sm-6" >
+                    <label class="center-block" for="host">Host :</label>
+                       <input id="host" class="form-control" name="callBack[host]" value="<%=callBack.host %>" required></input>
+                       <div class="valid-feedback">
+                        Looks good!
+                       </div>
+                </div>
+                
+                <div class="col-sm-6" >
+                    <label class="center-block" for="port">Port :</label>
+                       <input id="port" class="form-control" name="callBack[port]" value="<%=callBack.port %>" required></input>
+                       <div class="valid-feedback">
+                        Looks good!
+                       </div>
+                </div>
+
+                <div class="col-sm-6" >
+                    <label class="center-block" for="port">Path :</label>
+                       <input id="port" class="form-control" name="callBack[path]" value="<%=callBack.path %>" required></input>
+                       <div class="valid-feedback">
+                        Looks good!
+                       </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="body">Headers :</label>
+                <textarea class="form-control" rows="3" type="text" id="body" required
+                    name="callBack[headers]"><%= callBack.headers%> </textarea>
+                <div class="valid-feedback">
+                        Looks good!
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6" >
+                    <label class="center-block" for="httpMethod">Http Method:</label>
+                     <select class="form-select" aria-label="Default select example" name="callBack[httpMethod]" value="<%=callBack.httpMethod %>" required>
+                     <option selected><%=callBack.httpMethod %></option>
+                     <option value="GET">GET</option>
+                     <option value="POST">POST</option>
+                     <option value="PUT">PUT</option>
+                     <option value="DELETE">DELETE</option> 
+                   </select>
+                   <div class="valid-feedback">
+                     Looks good!
+                   </div>
+                 </div>
+                <div class="col-sm-6" >
+                    <label class="center-block" for="delay">Delay</label>
+                       <input id="delay" class="form-control" name="callBack[delay]" value="<%=callBack.delay %>" required></input>
+                       <div class="valid-feedback">
+                        Looks good!
+                       </div>
+                </div>
+            </div>
+            <br>
+            <div class="mb-3">
+                <label class="form-label" for="body">Request Body</label>
+                <textarea class="form-control" rows="6" type="text" id="body" required
+                    name="callBack[requestBody]"><%= callBack.requestBody%> </textarea>
+                <div class="valid-feedback">
+                        Looks good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-info">Update Mock EndPoint</button>
+            </div>
+          
+        </form>
+        <a href="/module/<%=moduleId%>/mock/show/<%= mock._id%>">Back To Mock EndPoint</a>
+        
+    </div>
+</div>

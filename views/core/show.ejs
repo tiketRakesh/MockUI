@@ -24,6 +24,41 @@
             </div>
         </div>
     </div>
+
+    <% if( mock.callBack.length < 1) { %>
+        <div class="col-6 offset-3">
+            <div>
+               <a href="/module/<%=moduleId%>/mock/<%=mock._id%>/callback">Add a callback </a>
+            </div>
+            <br></br>
+        </div>
+    <% } %>
+   
+    <% for(let cb of mock.callBack) { %>
+    <div class="col-6 offset-3">
+        <h5 class="card-title"><b> Callback Data</b></h5>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><b>protocol</b> : <%= cb.protocol%></h5>
+                <h5 class="card-title"><b>host</b> : <%= cb.host%></h5>
+                <h5 class="card-title"><b>port</b> : <%= cb.port%></h5>
+                <h5 class="card-title"><b>path</b> : <%= cb.path%></h5>
+                <h5 class="card-title"><b>headers</b> : <%= cb.headers%></h5>
+                <h5 class="card-title"><b>httpMethod</b> : <%= cb.httpMethod%></h5>
+                <h5 class="card-title"><b>delay</b> : <%= cb.delay%></h5>
+                <p class="card-text"><b>body</b> : <%= cb.requestBody%></p>
+            </div>
+            <div class="card-body">
+                <a class="card-link btn btn-info" href="/module/<%=moduleId%>/mock/<%=mock._id%>/callback/<%=cb._id%>/edit">Edit</a>
+                <form class="d-inline" action="/module/<%=moduleId%>/mock/<%=mock._id%>/callback/<%=cb._id%>?_method=DELETE" method="POST">
+                    <button class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+   
     <div class="col-6 offset-3">
         <h5 class="card-title"><b>Add Matcher : Headers</b></h5>
         <form novalidate class="validated-form" action="/module/<%=moduleId%>/mock/<%=mock._id%>/header" method="POST" >
@@ -127,6 +162,80 @@
                     </div>
                      <div class="col-sm-3" > 
                         <form action="/module/<%=moduleId%>/mock/<%=mock._id%>/requestBody/<%=path._id%>?_method=DELETE" method="POST">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>    
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <div class="col-6 offset-3">
+        <h5 class="card-title"><b>Add Matcher : Dynamic Response</b></h5>
+        <form novalidate class="validated-form" action="/module/<%=moduleId%>/mock/<%=mock._id%>/dynamicResponse" method="POST" >
+            <div class="card-body">
+            <div class="row">
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Req Key(JSON/XML Path)" name="dynamicResponse[key]" required></input>
+                 </div>
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Res Key(JSON/XML Path)" name="dynamicResponse[value]" required></input>
+                </div>
+                <div class="col-sm-3" >
+                    <button class="btn btn-success ">Add</button>
+                </div>
+            </div>
+            </div>
+        </form>
+        <% for(let dr of mock.dynamicResponse) { %>
+        <div class="card mb-3 ">
+            <div class="card-body">
+                <div class="row"> 
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Key Req: <%= dr.key %></p>
+                    </div>
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Key Res: <%= dr.value %></p>
+                    </div>
+                     <div class="col-sm-3" > 
+                        <form action="/module/<%=moduleId%>/mock/<%=mock._id%>/dynamicResponse/<%=dr._id%>?_method=DELETE" method="POST">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>    
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <div class="col-6 offset-3">
+        <h5 class="card-title"><b>Add Matcher : Dynamic Callback Request</b></h5>
+        <form novalidate class="validated-form" action="/module/<%=moduleId%>/mock/<%=mock._id%>/dynamicRequestCallback" method="POST" >
+            <div class="card-body">
+            <div class="row">
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Key Req" name="dynamicRequestCallback[key]" required></input>
+                 </div>
+                 <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Key Req Callback" name="dynamicRequestCallback[value]" required></input>
+                </div>
+                <div class="col-sm-3" >
+                    <button class="btn btn-success ">Add</button>
+                </div>
+            </div>
+            </div>
+        </form>
+        <% for(let drc of mock.dynamicRequestCallback) { %>
+        <div class="card mb-3 ">
+            <div class="card-body">
+                <div class="row"> 
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Key: <%= drc.key %></p>
+                    </div>
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Value: <%= drc.value %></p>
+                    </div>
+                     <div class="col-sm-3" > 
+                        <form action="/module/<%=moduleId%>/mock/<%=mock._id%>/dynamicRequestCallback/<%=drc._id%>?_method=DELETE" method="POST">
                             <button class="btn btn-sm btn-danger">Delete</button>
                         </form>
                     </div>

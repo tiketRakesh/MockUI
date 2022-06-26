@@ -1,0 +1,85 @@
+<% layout('layouts/boilerplate')%>
+<div class="row">
+    <h1 class="text-center">New callback Endpoint</h1>
+    <div class="col-6 offset-3">
+        <form action="/module/<%=moduleId%>/mock/<%= mock._id%>/callback" method="POST" novalidate class="validated-form">
+        
+            <div class="row">
+                <div class="col-sm-6" >
+                    <label class="center-block" for="protocol">Protocol :</label>
+                    <select class="form-select" aria-label="Default select example" name="callback[protocol]" required>
+                        <option selected></option>
+                        <option value="https">https</option>
+                        <option value="http">http</option>
+                      </select> 
+                      <div class="valid-feedback">
+                        Looks good!
+                    </div>               
+                </div>
+                <div class="col-sm-6" >
+                    <label class="center-block" for="host">Host :</label>
+                    <input id="host" class="form-control" name="callback[host]" required></input>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="col-sm-6" >
+                    <label class="center-block" for="port">Port :</label>
+                    <input id="port" class="form-control" name="callback[port]" required></input>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="col-sm-6" >
+                    <label class="center-block" for="path">Path :</label>
+                    <input id="port" class="form-control" name="callback[path]" required></input>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3">
+                    <label class="form-label" for="headers">Headers :</label>
+                    <textarea class="form-control" type="text" id="headers" name="callback[headers]" rows="3" required></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="col-sm-6" >
+                   <label class="center-block" for="httpMethod">Http Method:</label>
+                    <select class="form-select" aria-label="Default select example" name="callback[httpMethod]" required>
+                    <option selected></option>
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                  </select>
+                  <div class="valid-feedback">
+                    Looks good!
+                  </div>
+                </div>
+                <div class="col-sm-6" >
+                    <label class="center-block" for="delay">Delay:</label>
+                    <input id="delay" class="form-control" name="callback[delay]" required></input>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="mb-3">
+                <label class="form-label" for="body">Request Body:</label>
+                <textarea class="form-control" type="text" id="body" name="callback[requestBody]" rows="6" required></textarea>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-success">Add callback Endpoint</button>
+            </div>
+        </form>
+         <a href="/module/<%=moduleId%>/mock/show/<%= mock._id%>">Back To Mock EndPoint</a>
+    </div>
+</div>
