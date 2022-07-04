@@ -176,10 +176,13 @@
             <div class="card-body">
             <div class="row">
                  <div class="col-sm-3" >
-                    <input  class="form-control" placeholder="Req Key(JSON/XML Path)" name="dynamicResponse[key]" required></input>
+                    <input  class="form-control" placeholder="Req Key" name="dynamicResponse[key]" required></input>
                  </div>
                  <div class="col-sm-3" >
-                    <input  class="form-control" placeholder="Res Key(JSON/XML Path)" name="dynamicResponse[value]" required></input>
+                    <input  class="form-control" placeholder="Res Key" name="dynamicResponse[value]" required></input>
+                </div>
+                <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Methods" name="dynamicResponse[method]" required></input>
                 </div>
                 <div class="col-sm-3" >
                     <button class="btn btn-success ">Add</button>
@@ -195,7 +198,10 @@
                         <p class="card-text">Key Req: <%= dr.key %></p>
                     </div>
                     <div class="col-sm-3" > 
-                        <p class="card-text">Key Res: <%= dr.value %></p>
+                        <p class="card-text">Key Response: <%= dr.value %></p>
+                    </div>
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Methods: <%= dr.method %></p>
                     </div>
                      <div class="col-sm-3" > 
                         <form action="/module/<%=moduleId%>/mock/<%=mock._id%>/dynamicResponse/<%=dr._id%>?_method=DELETE" method="POST">
@@ -213,10 +219,13 @@
             <div class="card-body">
             <div class="row">
                  <div class="col-sm-3" >
-                    <input  class="form-control" placeholder="Key Req" name="dynamicRequestCallback[key]" required></input>
+                    <input  class="form-control" placeholder="Req Key" name="dynamicRequestCallback[key]" required></input>
                  </div>
                  <div class="col-sm-3" >
-                    <input  class="form-control" placeholder="Key Req Callback" name="dynamicRequestCallback[value]" required></input>
+                    <input  class="form-control" placeholder="CB Req key" name="dynamicRequestCallback[value]" required></input>
+                </div>
+                <div class="col-sm-3" >
+                    <input  class="form-control" placeholder="Methods" name="dynamicRequestCallback[method]" ></input>
                 </div>
                 <div class="col-sm-3" >
                     <button class="btn btn-success ">Add</button>
@@ -229,10 +238,13 @@
             <div class="card-body">
                 <div class="row"> 
                     <div class="col-sm-3" > 
-                        <p class="card-text">Key: <%= drc.key %></p>
+                        <p class="card-text">Key Req: <%= drc.key %></p>
                     </div>
                     <div class="col-sm-3" > 
-                        <p class="card-text">Value: <%= drc.value %></p>
+                        <p class="card-text">Key Req Callback: <%= drc.value %></p>
+                    </div>
+                    <div class="col-sm-3" > 
+                        <p class="card-text">Methods: <%= drc.method %></p>
                     </div>
                      <div class="col-sm-3" > 
                         <form action="/module/<%=moduleId%>/mock/<%=mock._id%>/dynamicRequestCallback/<%=drc._id%>?_method=DELETE" method="POST">

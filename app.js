@@ -24,17 +24,17 @@ const session = require('express-session');
 const { isLoggedIn,isAdmin,isAuthor} = require('./middleware');
 
 
-/* mongoose.connect('mongodb://root:example@localhost:27017', {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-}); */
-
- mongoose.connect('mongodb://root:example@localhost:27017', {
+mongoose.connect('mongodb://localhost:27017/mocks', {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
 });
+
+/*  mongoose.connect('mongodb://root:example@localhost:27017', {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+}); */
 
 
 const db = mongoose.connection;
