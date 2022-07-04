@@ -1,0 +1,228 @@
+const express = require('express');
+const path = require('path');
+const mongoose = require('mongoose');
+const ejsMate = require('ejs-mate');
+const methodOverride = require('method-override');
+const mockDb = require('./models/mockSchema');
+const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/ExpressError');
+const Header = require('./models/header');
+const QParam = require('./models/qparam');
+const RequestBody = require('./models/requestBody');
+const ResponseHeader = require('./models/responseHeader');
+const Module = require('./models/module');
+const moduleMockMap = new Map();
+
+
+mongoose.connect('mongodb://localhost:27017/mocks', {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+});
+
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", () => {
+    console.log("Database connected");
+});
+
+const app = express();
+
+app.engine('ejs', ejsMate)
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'))
+
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
+
+//module related routes
+app.get('/', catchAsync(async (req, res) => {
+    const modules = await Module.find({});
+    for (let i = 0; i < modules.length; i++) {
+        module=modules[i];
+        const mocks = await mockDb.find({ module: modules[i].id });
+        module.length=mocks.length;
+    }
+    res.render('core/home',{modules})
+}));
+
+app.get('/module/new', (req, res) => {
+    res.render('core/newModule');
+})
+
+app.post('/addModule', catchAsync(async (req, res) => {
+    const module = new Module(req.body.module);
+    await module.save();
+    res.redirect(`/`)
+}));
+
+app.get('/module/:id/edit', catchAsync(async (req, res) => {
+    const module = await Module.findById(req.params.id)
+    res.render('core/editModule', { module });
+}));
+
+app.put('/module/:id', catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const mock = await Module.findByIdAndUpdate(id, { ...req.body.module });
+    res.redirect(`/`)
+}));
+
+app.delete('/module/:id', catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const mocks = await mockDb.find({ module: req.params.id });
+    length= mocks.length
+    if(length>0){
+        res.render('core/alert',{ length });          
+    }else{
+        await Module.findByIdAndDelete(id);
+        res.redirect(`/`)
+    }
+}));
+
+
+
+//Mock Model related routes 
+
+app.get('/module/:id/mocks', catchAsync(async (req, res) => {
+    moduleId = req.params.id;
+    const module = await Module.findById(moduleId)
+    moduleName=module.name;
+    const mocks = await mockDb.find({ module: moduleId });
+    res.render('core/index', { mocks ,moduleId,moduleName })
+}));
+
+app.get('/module/:id/mock/new', (req, res) => {
+    moduleId = req.params.id;
+    res.render('core/new',{moduleId});
+})
+
+app.post('/module/:id/mock', catchAsync(async (req, res) => {
+    const moduleID=req.params.id;
+    const mock = new mockDb(req.body.mock);
+    const module = await Module.findById(moduleID)
+    mock.module.push(module);
+    await mock.save();
+    res.redirect(`/module/${moduleID}/mock/show/${mock._id}`)
+}));
+
+app.get('/module/:moduleId/mock/show/:id', catchAsync(async (req, res,) => {
+    const moduleId= req.params.moduleId;
+    const mock = await mockDb.findById(req.params.id).populate('headers').populate('qparams').populate('requestBody').populate('responseHeaders').populate('module')
+    res.render('core/show', { mock ,moduleId});
+}));
+
+app.get('/module/:moduleId/mock/:id/edit', catchAsync(async (req, res) => {
+    const moduleId= req.params.moduleId;
+    const mock = await mockDb.findById(req.params.id)
+    res.render('core/edit', { mock ,moduleId});
+}));
+
+
+app.put('/module/:moduleId/mock/:id', catchAsync(async (req, res) => {
+    const { moduleId,id } = req.params;
+    const mock = await mockDb.findByIdAndUpdate(id, { ...req.body.mock });
+    res.redirect(`/module/${moduleId}/mock/show/${mock._id}`)
+}));
+
+
+app.delete('/module/:moduleId/mock/:id', catchAsync(async (req, res) => {
+    const { moduleId,id } = req.params;
+    const mock = await mockDb.findById(id).populate('module');    
+    await mockDb.findByIdAndDelete(id);
+    res.redirect(`/module/${moduleId}/mocks`)
+}));
+
+
+
+//Model Header related routing  
+app.post('/module/:moduleId/mock/:id/header', catchAsync(async (req, res) => {
+    const moduleId=req.params.moduleId;
+    const mock = await mockDb.findById(req.params.id);
+    const header = new Header(req.body.header);
+    mock.headers.push(header);
+    await header.save();
+    await mock.save();
+    res.redirect(`/module/${moduleId}/mock/show/${mock._id}`)
+}));
+
+app.delete('/module/:moduleId/mock/:id/header/:headerId', catchAsync(async (req, res) => {
+    const {moduleId, id, headerId } = req.params;
+    await mockDb.findByIdAndUpdate(id, { $pull: { headers: headerId } });
+    await Header.findByIdAndDelete(headerId);
+    res.redirect(`/module/${moduleId}/mock/show/${id}`)
+    
+}))
+
+
+//Model QParam  related routing  
+app.post('/module/:moduleId/mock/:id/qparam', catchAsync(async (req, res) => {
+    const moduleId=req.params.moduleId;
+    const mock = await mockDb.findById(req.params.id);
+    const qparam = new QParam(req.body.qparam);
+    mock.qparams.push(qparam);
+    await qparam.save();
+    await mock.save();
+    res.redirect(`/module/${moduleId}/mock/show/${mock._id}`)
+
+}));
+
+app.delete('/module/:moduleId/mock/:id/qparam/:qparamId', catchAsync(async (req, res) => {
+    const { moduleId,id, qparamId } = req.params;
+    await mockDb.findByIdAndUpdate(id, { $pull: { qparams: qparamId } });
+    await QParam.findByIdAndDelete(qparamId);
+    res.redirect(`/module/${moduleId}/mock/show/${id}`)
+}))
+
+
+//Model RequestBody related routing  
+app.post('/module/:moduleId/mock/:id/requestBody', catchAsync(async (req, res) => {
+    const moduleId=req.params.moduleId;
+    const mock = await mockDb.findById(req.params.id);
+    const requestBody = new RequestBody(req.body.requestBody);
+    mock.requestBody.push(requestBody);
+    await requestBody.save();
+    await mock.save();
+    res.redirect(`/module/${moduleId}/mock/show/${mock._id}`)
+}));
+
+app.delete('/module/:moduleId/mock/:id/requestBody/:pathId', catchAsync(async (req, res) => {
+    const { moduleId,id, pathId } = req.params;
+    await mockDb.findByIdAndUpdate(id, { $pull: { requestBody: pathId } });
+    await RequestBody.findByIdAndDelete(pathId);
+    res.redirect(`/module/${moduleId}/mock/show/${id}`)
+}))
+
+
+//Model Response Header related routing  
+app.post('/module/:moduleId/mock/:id/responseHeader', catchAsync(async (req, res) => {
+    const moduleId=req.params.moduleId;
+    const mock = await mockDb.findById(req.params.id);
+    const responseHeader = new ResponseHeader(req.body.responseHeader);
+    mock.responseHeaders.push(responseHeader);
+    await responseHeader.save();
+    await mock.save();
+    res.redirect(`/module/${moduleId}/mock/show/${mock._id}`)
+}));
+
+app.delete('/module/:moduleId/mock/:id/responseHeader/:responseHeaderId', catchAsync(async (req, res) => {
+    const { moduleId,id, responseHeaderId } = req.params;
+    await mockDb.findByIdAndUpdate(id, { $pull: { responseHeaders: responseHeaderId } });
+    await ResponseHeader.findByIdAndDelete(responseHeaderId);
+    res.redirect(`/module/${moduleId}/mock/show/${id}`)
+}))
+
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page Not Found', 404))
+})
+
+/* app.use((err, req, res, next) => {
+    const { statusCode = 500 } = err;
+    err.message = 'Page Not Found'
+    res.status(statusCode).render('error', { err })
+}) */
+
+
+app.listen(3010, () => {
+    console.log('Serving on port 3010')
+})
