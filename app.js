@@ -30,7 +30,7 @@ const { isLoggedIn,isAdmin,isAuthor} = require('./middleware');
     useUnifiedTopology: true
 }); */
 
- mongoose.connect('mongodb://root:example@localhost:27017', {
+ mongoose.connect('mongodb://localhost:27017/mocks', {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
